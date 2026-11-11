@@ -12,7 +12,7 @@ The parser pairs tool results by ID, deduplicates message UUIDs and repeated too
 
 The Node server binds to 127.0.0.1. Its `--file` argument selects the only file available from `/api/transcript`; browser uploads never leave browser memory. Host/origin validation protects local access. Production static serving is restricted to the built index, favicon, and assets. Build output contains no private conversation data.
 
-The homepage is rendered into the build output and hydrated on load. Vite generates its SEO head tags and public crawl files from `site.config.mjs`; the server explicitly allows the sharing image, app icons, manifest, robots file, and sitemap. See [SEO and deployment notes](seo.md) for the static-hosting workflow.
+The homepage is rendered into the build output and hydrated on load. Vite generates its SEO head tags and public crawl files from `site.config.ts`; the server explicitly allows the sharing image, app icons, manifest, robots file, and sitemap. See [SEO and deployment notes](seo.md) for the static-hosting workflow.
 
 The supplied session was tested in place, without copying it into source or fixtures. It contains 15,119 records, ten compactions, 143 human prompts, and 1,709 distinct tool calls. Tests use synthetic transcripts, and screenshots use synthetic content only.
 
