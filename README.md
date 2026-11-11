@@ -37,3 +37,5 @@ Public identity and URLs live in `site.config.ts`. Run `pnpm assets:brand` after
 Files stay local and are never copied into the project. Compaction boundaries remain visible, but discarded messages cannot be reconstructed from a summary. This is a visual recreation; JSONL does not store the original terminal's font, width, colors, or animations.
 
 Details: [docs/implementation.md](docs/implementation.md).
+
+Licensed under the [MIT License](LICENSE).
