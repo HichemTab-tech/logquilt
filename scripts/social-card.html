@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="UTF-8" /><style>
+* { box-sizing:border-box; }
+body { margin:0; width:1200px; height:630px; overflow:hidden; color:#e5e5e5; background:#1c1c1c; font-family:'JetBrainsMono Nerd Font','JetBrains Mono',Consolas,monospace; }
+.card { width:100%; height:100%; padding:50px 58px 38px; background:radial-gradient(ellipse at 15% 15%,#8fcab60b,transparent 65%); display:flex; flex-direction:column; }
+header { display:flex; align-items:center; gap:17px; }
+.logo { display:flex; }.logo svg { width:48px; height:48px; }
+.name { font-size:34px; font-weight:700; letter-spacing:-1.3px; }
+.badge { margin-left:auto; color:#8fcab6; font-size:13px; letter-spacing:1.5px; border:1px solid #8fcab634; border-radius:5px; padding:10px 15px; }
+.content { display:grid; grid-template-columns:630px 1fr; gap:24px; align-items:center; flex:1; }
+.eyebrow { margin:0 0 20px; font-size:13px; color:#a5a5a5; letter-spacing:1.3px; }
+h1 { font-size:46px; line-height:1.35; letter-spacing:-1.9px; font-weight:600; margin:0; }
+h1 span { color:#8fcab6; }
+.description { font-size:18px; line-height:1.65; color:#a5a5a5; margin:23px 0 0; }
+.terminal { border:1px solid #454545; border-radius:8px; overflow:hidden; background:#202020; box-shadow:0 14px 48px #0003; }
+.terminal-bar { display:flex; align-items:center; gap:6px; border-bottom:1px solid #363636; padding:13px 16px; color:#8a8a8a; font-size:11px; }
+.terminal-bar i { width:5px; height:5px; border-radius:50%; background:#8fcab6; }
+.terminal-bar span { margin-left:6px; }
+.messages { padding:23px 18px; font-size:14px; line-height:1.6; }
+.message { display:flex; gap:10px; margin-bottom:18px; }.message:last-child { margin-bottom:0; }
+.prompt { color:#8fcab6; }.muted { color:#999; }.tool { color:#b8d59a; }
+.result { padding-left:18px; color:#999; margin-top:-12px; margin-bottom:18px; font-size:12px; }
+.divider { display:flex; align-items:center; gap:8px; color:#909090; font-size:10px; margin:23px 0; }.divider::before,.divider::after { content:''; height:1px; background:#414141; flex:1; }
+footer { display:flex; justify-content:space-between; align-items:center; border-top:1px solid #383838; padding-top:21px; font-size:13px; color:#9d9d9d; }
+footer strong { color:#8fcab6; font-weight:400; }
+</style></head>
+<body><div class="card">
+  <header><span class="logo">{{LOGO}}</span><span class="name">Logquilt</span><span class="badge">LOCAL FILES. PRIVATE BY DEFAULT.</span></header>
+  <div class="content"><div>
+    <p class="eyebrow">CLAUDE CODE JSONL VIEWER</p>
+    <h1>Your conversations,<br /><span>back in the terminal.</span></h1>
+    <p class="description">Open a transcript. Keep the context.<br />Just read and scroll.</p>
+  </div><div class="terminal">
+    <div class="terminal-bar"><i></i><span>conversation.jsonl</span></div>
+    <div class="messages">
+      <div class="message"><span class="prompt">❯</span><span>Let's pick up where we left off.</span></div>
+      <div class="message"><span>●</span><span>The whole story, in one place.</span></div>
+      <div class="message"><span class="tool">●</span><span><b>Read</b>(session.jsonl)</span></div>
+      <div class="result">⎿ Messages, tools, and context</div>
+      <div class="divider">Conversation compacted</div>
+      <div class="message"><span class="prompt">❯</span><span class="muted">Keep reading…</span></div>
+    </div>
+  </div></div>
+  <footer><span>{{DOMAIN}}</span><span>Built by <strong>{{AUTHOR}}</strong></span></footer>
+</div></body></html>

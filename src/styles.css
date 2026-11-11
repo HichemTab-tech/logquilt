@@ -30,6 +30,11 @@
 .home-brand { display:flex; align-items:center; gap:12px; width:100%; max-width:1200px; margin:0 auto; padding:28px 0; font-size:12px; }
 .brand-mark { display:block; flex-shrink:0; color:var(--brand); }
 .brand-divider { color:var(--line); padding:0 2px; }
+.creator-credit a { color:var(--brand); text-decoration:none; }
+.creator-credit a:hover { text-decoration:underline; text-underline-offset:3px; }
+.creator-credit a:focus-visible { outline:1px solid var(--brand); outline-offset:4px; }
+.viewer-credit { display:flex; justify-content:flex-end; padding-top:6px; font-size:10px; color:var(--muted); }
+.noscript-message { padding:14px 24px; background:var(--subtle); color:var(--fg); font-size:13px; }
 .home-content { width:100%; max-width:650px; margin:0 auto; padding:45px 0 48px; }
 .home-eyebrow { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:10px; letter-spacing:1.3px; }
 .status-dot { width:5px; height:5px; border-radius:50%; background:var(--accent); }

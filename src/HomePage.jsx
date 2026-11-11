@@ -1,5 +1,6 @@
 import React from 'react';
 import BrandMark from './BrandMark.jsx';
+import CreatorCredit from './CreatorCredit.jsx';
 
 function fileSize(bytes) {
   return bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
@@ -33,6 +34,6 @@ export default function HomePage({ error, sample, conversation, onUpload, onOpen
       </button>}
       <div className="find-files"><span className="muted">Looking for your transcripts?</span><code>~/.claude/projects/</code><p>Each conversation is saved as a .jsonl file inside its project folder.</p></div>
     </div>
-    <footer className="home-footer"><span>Logquilt · Independent transcript viewer</span><span>Read-only · No account needed</span></footer>
+    <footer className="home-footer"><CreatorCredit /><span>Independent viewer · No account needed</span></footer>
   </main>;
 }

@@ -30,7 +30,7 @@ test('does not run HTML, create active links or load remote images',async({page}
   const text=JSON.stringify({type:'assistant',uuid:'x',message:{content:[{type:'text',text:'<img src=x onerror="window.pwned=true">\n\n![tracking](https://example.com/tracker)\n\n[bad](javascript:alert(1))'}]}});
   await open(page,text);
   await expect(page.locator('img')).toHaveCount(0);
-  await expect(page.locator('a')).toHaveCount(0);
+  await expect(page.getByRole('main').locator('a')).toHaveCount(0);
   expect(await page.evaluate(()=>window.pwned)).toBeUndefined();expect(requests).toEqual([]);
 });
 test('reports invalid files and recovers with a valid conversation',async({page})=>{

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import HomePage from './HomePage.jsx';
 import ConversationView from './ConversationView.jsx';
+import { site } from '../site.config.mjs';
 
 const MAX_FILE_SIZE = 512 * 1024 * 1024;
 
@@ -53,7 +54,9 @@ export default function App() {
   useEffect(() => {
     document.title = view === 'conversation' && conversation
       ? `${conversation.name} · Logquilt`
-      : 'Logquilt · Transcript viewer';
+      : site.title;
+    document.querySelector('meta[name="robots"]')?.setAttribute('content',
+      view === 'conversation' ? 'noindex, nofollow' : site.robots);
   }, [view, conversation]);
 
   const cancelLoad = useCallback(() => {

@@ -2,6 +2,7 @@ import React, { useMemo, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import TranscriptRow, { modelName } from './TranscriptRow.jsx';
 import BrandMark from './BrandMark.jsx';
+import CreatorCredit from './CreatorCredit.jsx';
 
 export default function ConversationView({ conversation, error, onHome }) {
   const { data, name } = conversation;
@@ -38,6 +39,7 @@ export default function ConversationView({ conversation, error, onHome }) {
     </main>
     <footer className="terminal-footer" aria-label="End of read-only transcript">
       <div className="static-prompt"><span className="prompt">❯</span><span className="cursor" aria-hidden="true" /></div>
+      <div className="viewer-credit"><CreatorCredit /></div>
     </footer>
   </div>;
 }

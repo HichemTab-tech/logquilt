@@ -5,7 +5,8 @@ import {resolve,dirname,basename,extname,sep} from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 
 const projectRoot = dirname(fileURLToPath(import.meta.url));
-const mime = {'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.woff2':'font/woff2','.ico':'image/x-icon'};
+const mime = {'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.woff2':'font/woff2','.ico':'image/x-icon','.png':'image/png','.txt':'text/plain; charset=utf-8','.xml':'application/xml; charset=utf-8','.webmanifest':'application/manifest+json'};
+const publicFiles = new Set(['/','/index.html','/favicon.svg','/favicon-16x16.png','/favicon-32x32.png','/apple-touch-icon.png','/icon-192.png','/icon-512.png','/social-preview.png','/robots.txt','/sitemap.xml','/site.webmanifest']);
 
 export async function createViewerServer({file,root=resolve(projectRoot,'dist'),dev=false}={}) {
   const selected = file ? resolve(file) : null;
@@ -23,6 +24,7 @@ export async function createViewerServer({file,root=resolve(projectRoot,'dist'),
     res.setHeader('Cache-Control','no-store');
     const pathname = new URL(req.url,'http://localhost').pathname;
     if (pathname.startsWith('/api/')) {
+      res.setHeader('X-Robots-Tag','noindex, nofollow');
       let info;
       if (selected) {try {info=await stat(selected);} catch { /* File moved or unavailable. */ }}
       if (pathname==='/api/session') {
@@ -39,7 +41,7 @@ export async function createViewerServer({file,root=resolve(projectRoot,'dist'),
     if (vite) return vite.middlewares(req,res,()=>end(404,'Not found.'));
     let decoded;
     try {decoded=decodeURIComponent(pathname);} catch {return end(400,'Invalid path.');}
-    if (decoded!=='/' && decoded!=='/index.html' && decoded!=='/favicon.svg' && !decoded.startsWith('/assets/')) return end(404,'Not found.');
+    if (!publicFiles.has(decoded) && !decoded.startsWith('/assets/')) return end(404,'Not found.');
     const target=resolve(root,decoded==='/'?'index.html':`.${decoded}`);
     if (!target.startsWith(resolve(root)+sep) || !mime[extname(target)]) return end(404,'Not found.');
     try {
@@ -51,7 +53,7 @@ export async function createViewerServer({file,root=resolve(projectRoot,'dist'),
     } catch {end(404,'Build the viewer first with npm run build.');}
   });
   if(dev) {
-    vite=await (await import('vite')).createServer({root:projectRoot,server:{middlewareMode:true,hmr:{server},allowedHosts:['localhost','127.0.0.1'],fs:{strict:true,deny:['**/*.jsonl','**/.env*','**/.git/**']}},appType:'spa'});
+    vite=await (await import('vite')).createServer({root:projectRoot,server:{middlewareMode:true,hmr:{server},allowedHosts:['localhost','127.0.0.1'],fs:{strict:true,deny:['**/*.jsonl','**/*.ndjson','**/.env*','**/.git/**']}},appType:'spa'});
     server.on('close',()=>vite.close());
   }
   return server;
