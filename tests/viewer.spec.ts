@@ -197,25 +197,21 @@ test('opens dropped JSONL files and rejects unsupported files with a retry', asy
     await expect.poll(() => page.getByRole('alert').count()).toBe(0);
 });
 
-test('offers the configured example without fetching it until requested', async ({ page }) => {
-    let transcriptRequests = 0;
+test('opens local uploads without requesting or offering a server example', async ({ page }) => {
+    const apiRequests: string[] = [];
+    page.on('request', (request) => {
+        if (new URL(request.url()).pathname.startsWith('/api/')) apiRequests.push(request.url());
+    });
     await page.route('**/api/session', (route) =>
         route.fulfill({ json: { available: true, name: 'configured.jsonl', size: 2048 } }),
     );
-    await page.route('**/api/transcript', (route) => {
-        transcriptRequests++;
-        return route.fulfill({ body: fixture(), contentType: 'application/x-ndjson' });
-    });
-    await page.goto('/');
+    await open(page);
+    await page.getByRole('button', { name: 'Back to home' }).click();
     await expect
-        .poll(() => page.getByRole('button', { name: /Open example conversation/ }).isVisible())
+        .poll(() => page.getByRole('button', { name: 'Upload JSONL' }).isVisible())
         .toBe(true);
-    expect(transcriptRequests).toBe(0);
-    await page.getByRole('button', { name: /Open example conversation/ }).click();
-    await expect
-        .poll(() => page.getByRole('main').getAttribute('data-filename'))
-        .toBe('configured.jsonl');
-    expect(transcriptRequests).toBe(1);
+    expect(await page.getByRole('button', { name: /Open example conversation/ }).count()).toBe(0);
+    expect(apiRequests).toEqual([]);
 });
 
 test('home page fits a phone screen', async ({ page }) => {

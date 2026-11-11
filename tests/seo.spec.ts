@@ -84,6 +84,7 @@ test('serves crawl files, sharing image and icon assets with their proper types'
     expect(manifest.headers()['content-type']).toContain('application/manifest+json');
     expect((await manifest.json()).name).toBe('Logquilt');
     const api = await request.get('/api/session');
+    expect(api.status()).toBe(404);
     expect(api.headers()['x-robots-tag']).toContain('noindex');
 });
 

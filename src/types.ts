@@ -83,12 +83,6 @@ export interface Conversation {
     data: Transcript;
 }
 
-export interface Sample {
-    available: true;
-    name: string;
-    size: number;
-}
-
 export interface ParseRequest {
     type: 'parse';
     file: Blob;

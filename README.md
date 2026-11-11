@@ -12,7 +12,7 @@ pnpm start
 
 Open http://127.0.0.1:4173. Upload or drop a `.jsonl` or `.ndjson` file on the home page to read it. Use **Home** to upload another file or continue reading the current conversation. Files up to 512 MB are supported and stay in browser memory; refreshing clears the current upload.
 
-To offer a local example on the home page, add `--file /absolute/path/to/conversation.jsonl` to `pnpm start`. It loads only when you click **Open example conversation**. Session files are usually under `~/.claude/projects/`.
+Session files are usually under `~/.claude/projects/`.
 
 ## Development
 
@@ -30,7 +30,7 @@ TypeScript checks the app, worker, server, scripts, and configurations in strict
 
 ## Publish
 
-Run `pnpm build` and deploy the contents of `dist/` as a static site at **https://logquilt.hichemtab-tech.me/**. The build includes the rendered homepage, search/social metadata, sitemap, robots file, sharing image, and app icons. The Node server is for local use; a public deployment does not need it or the example transcript.
+Run `pnpm build` and deploy the contents of `dist/` as a static site at **https://logquilt.hichemtab-tech.me/**. The build includes the rendered homepage, search/social metadata, sitemap, robots file, sharing image, and app icons. The Node server is for local use; a public deployment does not need it.
 
 Public identity and URLs live in `site.config.ts`. Run `pnpm assets:brand` after changing the logo or social-card design. See [SEO and deployment notes](docs/seo.md).
 

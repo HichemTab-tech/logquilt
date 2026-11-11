@@ -7,15 +7,15 @@ import { get } from 'node:http';
 import { listen, closeServer } from './server.helpers.ts';
 import { createViewerServer } from '../server.ts';
 
-test('serves only the selected transcript and rejects cross-origin access', async () => {
+test('serves public assets and rejects transcript files and cross-origin access', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'viewer-test-'));
     await writeFile(join(dir, 'session.jsonl'), '{"type":"user"}\n');
     await writeFile(join(dir, 'index.html'), '<title>Viewer</title>');
-    const server = await createViewerServer({ file: join(dir, 'session.jsonl'), root: dir });
+    const server = await createViewerServer({ root: dir });
     const url = await listen(server);
     try {
-        assert.equal((await fetch(url + '/api/session')).status, 200);
-        assert.equal(await (await fetch(url + '/api/transcript')).text(), '{"type":"user"}\n');
+        assert.equal((await fetch(url + '/api/session')).status, 404);
+        assert.equal((await fetch(url + '/api/transcript')).status, 404);
         assert.equal(
             (await fetch(url + '/api/transcript', { headers: { Origin: 'https://evil.example' } }))
                 .status,
@@ -41,11 +41,11 @@ test('serves only the selected transcript and rejects cross-origin access', asyn
     }
 });
 
-test('missing sample is reported without exposing arbitrary paths', async () => {
+test('removed example endpoints never expose files or session metadata', async () => {
     const server = await createViewerServer({ root: '/nonexistent' });
     const url = await listen(server);
     try {
-        assert.deepEqual(await (await fetch(url + '/api/session')).json(), { available: false });
+        assert.equal((await fetch(url + '/api/session')).status, 404);
         assert.equal((await fetch(url + '/api/transcript?path=/etc/passwd')).status, 404);
     } finally {
         await closeServer(server);

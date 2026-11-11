@@ -1,14 +1,13 @@
 import { createServer } from 'node:http';
 import { createReadStream } from 'node:fs';
 import { stat } from 'node:fs/promises';
-import { resolve, dirname, basename, extname, sep } from 'node:path';
+import { resolve, dirname, extname, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const projectRoot = dirname(fileURLToPath(import.meta.url));
 import type { ViteDevServer } from 'vite';
 
 interface ServerOptions {
-    file?: string;
     root?: string;
     dev?: boolean;
 }
@@ -41,11 +40,9 @@ const publicFiles = new Set([
 ]);
 
 export async function createViewerServer({
-    file,
     root = resolve(projectRoot, 'dist'),
     dev = false,
 }: ServerOptions = {}) {
-    const selected = file ? resolve(file) : null;
     let vite: ViteDevServer | undefined;
     const server = createServer(async (req, res) => {
         const end = (code: number, message: string) => {
@@ -70,36 +67,7 @@ export async function createViewerServer({
         const pathname = new URL(req.url ?? '/', 'http://localhost').pathname;
         if (pathname.startsWith('/api/')) {
             res.setHeader('X-Robots-Tag', 'noindex, nofollow');
-            let info;
-            if (selected) {
-                try {
-                    info = await stat(selected);
-                } catch {
-                    /* File moved or unavailable. */
-                }
-            }
-            if (pathname === '/api/session') {
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                return res.end(
-                    JSON.stringify(
-                        info?.isFile() && selected
-                            ? { available: true, name: basename(selected), size: info.size }
-                            : { available: false },
-                    ),
-                );
-            }
-            if (pathname !== '/api/transcript' || !info?.isFile() || !selected)
-                return end(404, 'No transcript selected. Open a JSONL file in the viewer.');
-            res.writeHead(200, {
-                'Content-Type': 'application/x-ndjson; charset=utf-8',
-                'Content-Length': info.size,
-            });
-            if (req.method === 'HEAD') return res.end();
-            const stream = createReadStream(selected);
-            stream.on('error', () => res.destroy());
-            res.on('close', () => stream.destroy());
-            stream.pipe(res);
-            return;
+            return end(404, 'Not found.');
         }
         if (vite) return vite.middlewares(req, res, () => end(404, 'Not found.'));
         let decoded;
@@ -155,11 +123,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
         console.error('Choose a valid --port.');
         process.exit(1);
     }
-    if (args.includes('--file') && (!value('--file') || value('--file')?.startsWith('--'))) {
-        console.error('Provide a JSONL path after --file.');
-        process.exit(1);
-    }
-    const server = await createViewerServer({ dev: args.includes('--dev'), file: value('--file') });
+    const server = await createViewerServer({ dev: args.includes('--dev') });
     server.on('error', (error) => {
         console.error(
             'code' in error && error.code === 'EADDRINUSE'

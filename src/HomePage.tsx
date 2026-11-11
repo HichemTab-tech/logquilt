@@ -2,31 +2,16 @@ import React from 'react';
 import BrandMark from './BrandMark.tsx';
 import CreatorCredit from './CreatorCredit.tsx';
 
-import type { Conversation, Sample } from './types.ts';
+import type { Conversation } from './types.ts';
 
 interface Props {
     error: string;
-    sample: Sample | null;
     conversation: Conversation | null;
     onUpload: () => void;
-    onOpenSample: () => void;
     onResume: () => void;
 }
 
-function fileSize(bytes: number) {
-    return bytes >= 1024 * 1024
-        ? `${(bytes / 1024 / 1024).toFixed(1)} MB`
-        : `${Math.max(1, Math.round(bytes / 1024))} KB`;
-}
-
-export default function HomePage({
-    error,
-    sample,
-    conversation,
-    onUpload,
-    onOpenSample,
-    onResume,
-}: Props) {
+export default function HomePage({ error, conversation, onUpload, onResume }: Props) {
     return (
         <main className="home-page">
             <header className="home-brand">
@@ -86,21 +71,6 @@ export default function HomePage({
                         <span className="card-detail">
                             {conversation.data.stats.prompts} prompts
                         </span>
-                        <span className="card-arrow" aria-hidden="true">
-                            →
-                        </span>
-                    </button>
-                )}
-                {sample && (
-                    <button className="conversation-card" onClick={onOpenSample}>
-                        <span className="card-symbol" aria-hidden="true">
-                            ▤
-                        </span>
-                        <span className="card-content">
-                            <strong>Open example conversation</strong>
-                            <span>{sample.name}</span>
-                        </span>
-                        <span className="card-detail">{fileSize(sample.size)}</span>
                         <span className="card-arrow" aria-hidden="true">
                             →
                         </span>

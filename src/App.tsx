@@ -3,8 +3,7 @@ import HomePage from './HomePage.tsx';
 import ConversationView from './ConversationView.tsx';
 import { site } from '../site.config.ts';
 
-import { isObject } from './types.ts';
-import type { Conversation, Sample, ParseRequest, ParseResponse } from './types.ts';
+import type { Conversation, ParseRequest, ParseResponse } from './types.ts';
 type View = 'home' | 'conversation';
 
 const MAX_FILE_SIZE = 512 * 1024 * 1024;
@@ -12,7 +11,6 @@ const MAX_FILE_SIZE = 512 * 1024 * 1024;
 export default function App() {
     const [conversation, setConversation] = useState<Conversation | null>(null);
     const [view, setView] = useState<View>('home');
-    const [sample, setSample] = useState<Sample | null>(null);
     const [loading, setLoading] = useState<{ name: string; label: string } | null>(null);
     const [progress, setProgress] = useState(0);
     const [error, setError] = useState('');
@@ -20,7 +18,6 @@ export default function App() {
     const fileInput = useRef<HTMLInputElement>(null);
     const worker = useRef<Worker | null>(null);
     const loadId = useRef(0);
-    const fetchAbort = useRef<AbortController | null>(null);
     const dragDepth = useRef(0);
     const currentConversation = useRef<Conversation | null>(null);
     currentConversation.current = conversation;
@@ -54,23 +51,7 @@ export default function App() {
             setError('');
         };
         window.addEventListener('popstate', onPopState);
-        const controller = new AbortController();
-        fetch('/api/session', { signal: controller.signal })
-            .then((response) => (response.ok ? response.json() : null))
-            .then((info: unknown) => {
-                if (
-                    !controller.signal.aborted &&
-                    isObject(info) &&
-                    info.available === true &&
-                    typeof info.name === 'string' &&
-                    typeof info.size === 'number'
-                )
-                    setSample({ available: true, name: info.name, size: info.size });
-            })
-            .catch(() => {}); // File uploads work without a configured server-side example.
         return () => {
-            controller.abort();
-            fetchAbort.current?.abort();
             worker.current?.terminate();
             window.removeEventListener('popstate', onPopState);
         };
@@ -88,7 +69,6 @@ export default function App() {
 
     const cancelLoad = useCallback(() => {
         loadId.current++;
-        fetchAbort.current?.abort();
         worker.current?.terminate();
         worker.current = null;
         setLoading(null);
@@ -164,29 +144,6 @@ export default function App() {
         [beginLoad, parseFile],
     );
 
-    const openSample = async () => {
-        if (!sample) return;
-        const id = beginLoad(sample.name);
-        if (sample.size > MAX_FILE_SIZE) {
-            setLoading(null);
-            setError('The example is larger than 512 MB. Choose a smaller transcript.');
-            return;
-        }
-        const controller = new AbortController();
-        fetchAbort.current = controller;
-        try {
-            const response = await fetch('/api/transcript', { signal: controller.signal });
-            if (!response.ok) throw new Error();
-            const file = await response.blob();
-            if (id === loadId.current) parseFile(file, sample.name, id);
-        } catch (err) {
-            if ((!(err instanceof Error) || err.name !== 'AbortError') && id === loadId.current) {
-                setLoading(null);
-                setError('The example is no longer available. Upload a JSONL file instead.');
-            }
-        }
-    };
-
     const onDrop = (event: DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         dragDepth.current = 0;
@@ -230,10 +187,8 @@ export default function App() {
             {view === 'home' || !conversation ? (
                 <HomePage
                     error={error}
-                    sample={sample}
                     conversation={conversation}
                     onUpload={() => fileInput.current?.click()}
-                    onOpenSample={openSample}
                     onResume={() => navigate('conversation')}
                 />
             ) : (
