@@ -1,4 +1,6 @@
-# Transcript rendering
+# Logquilt transcript rendering
+
+Logquilt uses its own name and woven-lines mark on the home page, viewer, and favicon. Claude Code appears only as a description of supported transcripts; imported model names and paths remain faithful to the source. The saved CLI version is not presented as Logquilt's version.
 
 The user requested Claude Code CLI appearance and later explicitly limited the UI to viewing and scrolling. Normal collapsed tool previews are intentional. Thinking, long tool output, and compaction summary text are not expanded. There are no keyboard handlers or conversation actions.
 

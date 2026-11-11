@@ -52,8 +52,8 @@ export default function App() {
 
   useEffect(() => {
     document.title = view === 'conversation' && conversation
-      ? `${conversation.name} · Claude Code`
-      : 'Claude Code · Transcript viewer';
+      ? `${conversation.name} · Logquilt`
+      : 'Logquilt · Transcript viewer';
   }, [view, conversation]);
 
   const cancelLoad = useCallback(() => {
@@ -183,7 +183,7 @@ export default function App() {
           onHome={() => navigate('home')} />}
     {loading && <div className="loading-overlay" role="dialog" aria-modal="true" aria-label="Opening conversation">
       <div className="loading-card">
-        <div role="status"><span className="spinner">✳</span> {loading.label}… <span className="muted">{progress}%</span></div>
+        <div role="status"><span className="spinner" aria-hidden="true">◌</span> {loading.label}… <span className="muted">{progress}%</span></div>
         <p className="loading-filename muted">{loading.name}</p>
         <div className="loading-track"><div style={{ width: `${Math.max(3, progress)}%` }} /></div>
         <button className="cancel-load" onClick={cancelLoad} autoFocus>Cancel</button>

@@ -65,6 +65,6 @@ if (process.argv[1] && import.meta.url===pathToFileURL(resolve(process.argv[1]))
   if (args.includes('--file') && (!value('--file') || value('--file').startsWith('--'))) {console.error('Provide a JSONL path after --file.');process.exit(1);}
   const server=await createViewerServer({dev:args.includes('--dev'),file:value('--file')});
   server.on('error',error=>{console.error(error.code==='EADDRINUSE'?'Port in use. Choose another with --port.':'Could not start the local viewer.');process.exit(1);});
-  server.listen(port,'127.0.0.1',()=>console.log(`Claude transcript viewer: http://127.0.0.1:${port}`));
+  server.listen(port,'127.0.0.1',()=>console.log(`Logquilt: http://127.0.0.1:${port}`));
   for(const signal of ['SIGINT','SIGTERM']) process.on(signal,()=>server.close(()=>process.exit(0)));
 }

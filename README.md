@@ -1,6 +1,6 @@
-# Claude Code transcript viewer
+# Logquilt
 
-A local, read-only viewer for Claude Code JSONL conversations. It uses the CLI's dark terminal layout and normal collapsed tool previews. Open a conversation and scroll; there are no chat actions, menus, or keyboard shortcuts.
+Logquilt is an independent, local viewer for Claude Code JSONL conversations. It uses a dark terminal layout and normal collapsed tool previews. Open a conversation and scroll; there are no chat actions, menus, or keyboard shortcuts.
 
 ## Run locally
 

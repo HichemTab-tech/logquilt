@@ -1,6 +1,7 @@
 import React, { useMemo, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import TranscriptRow, { modelName } from './TranscriptRow.jsx';
+import BrandMark from './BrandMark.jsx';
 
 export default function ConversationView({ conversation, error, onHome }) {
   const { data, name } = conversation;
@@ -17,9 +18,9 @@ export default function ConversationView({ conversation, error, onHome }) {
 
   return <div className="terminal">
     <header className="terminal-heading">
-      <pre className="mascot" aria-hidden="true">{' ▐▛███▜▌\n▝▜█████▛▘\n  ▘▘ ▝▝'}</pre>
+      <BrandMark className="viewer-brand-mark" size={48} />
       <div className="identity">
-        <div><strong>Claude Code</strong> <span className="muted">{metadata.version ? `v${metadata.version}` : ''}</span></div>
+        <div><strong>Logquilt</strong> <span className="muted">transcript viewer</span></div>
         <div className="muted">{metadata.model ? modelName(metadata.model) : 'Conversation viewer'}</div>
         <div className="cwd muted" title={metadata.cwd}>{metadata.cwd || name}</div>
       </div>

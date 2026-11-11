@@ -1,4 +1,5 @@
 import React from 'react';
+import BrandMark from './BrandMark.jsx';
 
 function fileSize(bytes) {
   return bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
@@ -6,7 +7,7 @@ function fileSize(bytes) {
 
 export default function HomePage({ error, sample, conversation, onUpload, onOpenSample, onResume }) {
   return <main className="home-page">
-    <header className="home-brand"><span className="brand-symbol" aria-hidden="true"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M12 2v20M2 12h20M4.9 4.9l14.2 14.2M4.9 19.1 19.1 4.9" /></svg></span><strong>Claude Code</strong><span className="brand-divider">/</span><span className="muted">transcripts</span></header>
+    <header className="home-brand"><BrandMark size={30} /><strong>Logquilt</strong><span className="brand-divider">/</span><span className="muted">transcripts</span></header>
     <div className="home-content">
       <div className="home-eyebrow"><span className="status-dot" /> LOCAL CONVERSATION VIEWER</div>
       <h1>Your conversations,<br /><span>back in the terminal.</span></h1>
@@ -32,6 +33,6 @@ export default function HomePage({ error, sample, conversation, onUpload, onOpen
       </button>}
       <div className="find-files"><span className="muted">Looking for your transcripts?</span><code>~/.claude/projects/</code><p>Each conversation is saved as a .jsonl file inside its project folder.</p></div>
     </div>
-    <footer className="home-footer"><span>Read the conversation. Keep the context.</span><span>Read-only · No account needed</span></footer>
+    <footer className="home-footer"><span>Logquilt · Independent transcript viewer</span><span>Read-only · No account needed</span></footer>
   </main>;
 }
