@@ -1,8 +1,10 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import TranscriptRow, { modelName } from './TranscriptRow.tsx';
 import BrandMark from './BrandMark.tsx';
 import CreatorCredit from './CreatorCredit.tsx';
+import TranscriptSearch from './TranscriptSearch.tsx';
+import { indexTranscript, findMatches } from './search.ts';
 
 import type { Conversation } from './types.ts';
 
@@ -15,10 +17,21 @@ interface Props {
 export default function ConversationView({ conversation, error, onHome }: Props) {
     const { data, name } = conversation;
     const scroller = useRef<HTMLElement>(null);
+    const [query, setQuery] = useState('');
+    const [resultIndex, setResultIndex] = useState(0);
+    const deferredQuery = useDeferredValue(query.trim());
+    const pending = deferredQuery !== query.trim();
     const entries = useMemo(
         () => data.entries.filter((entry) => entry.kind !== 'thinking'),
         [data],
     );
+    const searchIndex = useMemo(() => indexTranscript(entries), [entries]);
+    const matches = useMemo(
+        () => findMatches(searchIndex, deferredQuery),
+        [searchIndex, deferredQuery],
+    );
+    const position = matches.length ? Math.min(resultIndex, matches.length - 1) : 0;
+    const activeMatch = pending ? undefined : matches[position];
     const virtual = useVirtualizer({
         count: entries.length,
         getScrollElement: () => scroller.current,
@@ -27,6 +40,10 @@ export default function ConversationView({ conversation, error, onHome }: Props)
         getItemKey: (index) => entries[index].id,
     });
     const metadata = data.metadata;
+
+    useEffect(() => {
+        if (activeMatch) virtual.scrollToIndex(activeMatch.entryIndex, { align: 'start' });
+    }, [activeMatch, virtual]);
 
     return (
         <div className="terminal">
@@ -47,6 +64,25 @@ export default function ConversationView({ conversation, error, onHome }: Props)
                     <span aria-hidden="true">←</span> Home
                 </button>
             </header>
+            <TranscriptSearch
+                query={query}
+                pending={pending}
+                count={matches.length}
+                position={position}
+                match={activeMatch}
+                onQueryChange={(value) => {
+                    setQuery(value);
+                    setResultIndex(0);
+                }}
+                onNavigate={(direction) => {
+                    if (!pending && matches.length) {
+                        const next = (position + direction + matches.length) % matches.length;
+                        setResultIndex(next);
+                        // Also jump when a single result is already selected but scrolled away.
+                        virtual.scrollToIndex(matches[next].entryIndex, { align: 'start' });
+                    }
+                }}
+            />
             {error && (
                 <div className="error-banner" role="alert">
                     {error}
@@ -73,6 +109,8 @@ export default function ConversationView({ conversation, error, onHome }: Props)
                         <div
                             key={item.key}
                             data-index={item.index}
+                            data-search-active={activeMatch?.entryIndex === item.index || undefined}
+                            aria-current={activeMatch?.entryIndex === item.index || undefined}
                             ref={virtual.measureElement}
                             className="virtual-row"
                             style={{ transform: `translateY(${item.start}px)` }}

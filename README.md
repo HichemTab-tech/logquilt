@@ -1,6 +1,6 @@
 # Logquilt
 
-Logquilt is an independent, local viewer for Claude Code JSONL conversations. It uses a dark terminal layout and normal collapsed tool previews. Open a conversation and scroll; there are no chat actions, menus, or keyboard shortcuts.
+Logquilt is an independent, local viewer for Claude Code JSONL conversations. It uses a dark terminal layout and normal collapsed tool previews. Search, read, and scroll through a conversation; there are no chat actions, menus, or keyboard shortcuts.
 
 ## Run locally
 
@@ -11,6 +11,8 @@ pnpm start
 ```
 
 Open http://127.0.0.1:4173. Upload or drop a `.jsonl` or `.ndjson` file on the home page to read it. Use **Home** to upload another file or continue reading the current conversation. Files up to 512 MB are supported and stay in browser memory; refreshing clears the current upload.
+
+Use **Search conversation** to find messages, tool arguments/output, and compaction summaries. Previous/next buttons jump between matching entries; the highlighted excerpt also shows matches hidden inside collapsed output. Search stays in your browser.
 
 Session files are usually under `~/.claude/projects/`.
 
